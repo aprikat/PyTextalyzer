@@ -88,7 +88,7 @@ def get_cosine_similarity(conv):
     # print outbound
 
     vect = TfidfVectorizer(min_df=1, decode_error='ignore')
-    tfidf = vect.fit_transform([inbound], [outbound])
+    tfidf = vect.fit_transform([inbound, outbound])
     return (tfidf * tfidf.T).A
 
 if __name__ == '__main__':
