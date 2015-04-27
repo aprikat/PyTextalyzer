@@ -47,7 +47,7 @@ def index():
     # sentiment_classifier = sentiment_train()
     # print sentiment_classifier.classify(word_feats("Happy excellent magnificent outstanding"))
 
-    print get_cosine_similarity(ankita_conv)
+    print(get_cosine_similarity(ankita_conv))
 
 
     return render_template('index.html')
