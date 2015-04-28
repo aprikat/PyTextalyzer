@@ -2,8 +2,17 @@
     font-family: Bebas Neue;
     src: url('BebasNeue.otf');
 }
+@font-face {
+    font-family: Lato;
+    src: url('Lato-Regular.ttf');
+}
+@font-face {
+    font-family: Lato Bold;
+    src: url('Lato-Bold.ttf');
+}
 
-body            { font-family: sans-serif; background: #fff; }
+
+body            { font-family: Lato; }
 a, h1, h2       { color: #34495e; }
 h1, h2          { font-family: 'Bebas Neue', serif; margin: 0; }
 h1              { border-bottom: 2px solid #eee; }
@@ -26,6 +35,39 @@ h1 {
     font-size: 80px;
     text-align: center;
     position: absolute;
+    top: 35%;
+    transform: translateY(-50%);
+    left: 40%;
+}
+
+.choose-friend {
+    position: absolute;
+    top: 43%;
+    left: 39%;
+    font-family: Lato;
+    font-size: 18px;
+}
+
+.choose-friend-header {
+    font-family: Lato Bold;
+    font-size: 24px;
+}
+
+.choose-friend-children {
+    width: 100% !important;
+}
+
+#content {
+    position: absolute;
+    top: 15%;
+    left: 20%;
+    height: 80%;
+    width: 60%;
+}
+
+h2 {
+    font-size: 48px;
+    text-align: center;
     top: 35%;
     transform: translateY(-50%);
     left: 40%;

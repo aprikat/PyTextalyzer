@@ -1,9 +1,24 @@
 <!doctype html>
-<title>Hello from Flask</title>
+<title>PyTextalyzer</title>
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
 {% if name %}
   <h1>Hello {{ name }}!</h1>
 {% else %}
   <h1>TEXTALYZER</h1>
+  <div class="pure-menu pure-menu-horizontal choose-friend">
+    <ul class="pure-menu-list">
+        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+            <a href="#" id="menuLink1" class="pure-menu-link choose-friend-header">choose a friend to analyze</a>
+            <ul class="pure-menu-children choose-friend-children">
+                <li class="pure-menu-item"><a href="/ankita" class="pure-menu-link">Ankita Agharkar</a></li>
+                <li class="pure-menu-item"><a href="/riley" class="pure-menu-link">Riley Pietsch</a></li>
+                <li class="pure-menu-item"><a href="/christina" class="pure-menu-link">Christina Milanes</a></li>
+                <li class="pure-menu-item"><a href="/mom" class="pure-menu-link">Helene Deng</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
 {% endif %}
+
