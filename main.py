@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import render_template
+from flask import jsonify
 from datetime import datetime
 
 import nltk.classify.util
@@ -33,13 +34,15 @@ def read_texts(textfile, sender):
             if items[0] == '+14088215768':
                 tm = {}
                 tm["sender"] = items[0]
-                tm["timestamp"] = datetime.strptime(items[1], '%b %d, %Y, %I:%M %p')
+                # tm["timestamp"] = datetime.strptime(items[1], '%b %d, %Y, %I:%M %p')
+                tm["timestamp"] = items[1].decode('utf-8', errors='ignore')
                 tm["body"] = items[2].strip()
                 this_conv.outbound.append(tm)
             elif items[0] == sender:
                 tm = {}
                 tm["sender"] = items[0]
-                tm["timestamp"] = datetime.strptime(items[1], '%b %d, %Y, %I:%M %p')
+                # tm["timestamp"] = datetime.strptime(items[1], '%b %d, %Y, %I:%M %p')
+                tm["timestamp"] = items[1].decode('utf-8', errors='ignore')
                 tm["body"] = items[2].strip()
                 this_conv.inbound.append(tm)
             else:
@@ -61,6 +64,8 @@ def ankita():
 
     # sentiment analysis
     inbound_sentiments, outbound_sentiments = get_sentiments(ankita_conv)
+
+    print inbound_sentiments
 
     # trigram modeling
     # lm = generate_language_model(ankita_conv.inbound)
@@ -131,15 +136,19 @@ def get_sentiments(conv):
     outbound = []
 
     for tm in conv.inbound:
+        timestamp = tm["timestamp"] # datetime.datetime
         body = tm["body"].decode('ascii', errors='ignore')
         score = TextBlob(body).sentiment[0]
-        inbound.append(score)
+        inbound.append([timestamp, score])
 
     for tm in conv.outbound:
+        timestamp = tm["timestamp"] # datetime.datetime
         body = tm["body"].decode('ascii', errors='ignore')
         score = TextBlob(body).sentiment[0]
-        outbound.append(score)
+        outbound.append([timestamp, score])
 
+    inbound = list(inbound)
+    outbound = list(outbound)
     return (inbound, outbound)
 
 
