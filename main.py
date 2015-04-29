@@ -23,6 +23,7 @@ class Conversation:
         self.outbound = []
 
 cs = CosineSimilarity()
+all_convos = {}
 
 # class TextMessage:
 #     def __init__(self):
@@ -70,53 +71,54 @@ def read_texts(textfile, sender, plain_text):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    all_convos['ankita'] = read_texts('data/ankita.txt', '+15103649591', 'data/ankita_plain.txt')
+    all_convos['riley'] = read_texts('data/riley.txt', '+18186323954', 'data/riley_plain.txt')
+    all_convos['christina'] = read_texts('data/christina.txt', '+19165217921', 'data/christina_plain.txt')
+    all_convos['mom'] = read_texts('data/mom.txt', '+14088211126', 'data/mom_plain.txt')
+
+    all_outbound = all_convos['ankita'].outbound + all_convos['riley'].outbound + all_convos['christina'].outbound + all_convos['mom'].outbound
+
+    corpora_sims = cs.get_cosine_similarity_to_corpora(all_outbound)
+
+    return render_template('index.html',
+        corpora_sims=corpora_sims)
 
 
 @app.route('/ankita')
 def ankita():
-    ankita_conv = read_texts('data/ankita.txt', '+15103649591', 'data/ankita_plain.txt')
     inbound_sentiments = []
     outbound_sentiments = []
+
+    # cosine similarity
+    sim = cs.get_conv_cosine_similarity(all_convos['ankita'])
 
     # language modeling
     sample_sentence = generate_markov('data/ankita_plain.txt')
 
     # sentiment analysis
-    inbound_sentiments, outbound_sentiments = get_sentiments(ankita_conv)
-
-    # cosine similarity
-    # matrix = get_cosine_similarity(ankita_conv)[0]
-    # sim = str(matrix).split(' ')[-1][:-1]
-
-    sim = cs.get_conv_cosine_similarity(ankita_conv)
-
-    # corpora_sims = cs.get_cosine_similarity_to_corpora(ankita_conv.outbound)
+    inbound_sentiments, outbound_sentiments = get_sentiments(all_convos['ankita'])
 
     return render_template('friend.html',
         name='Ankita Agharkar',
         sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
-        # corpora_sims=corpora_sims,
         cosine_sim=sim)
 
 
 @app.route('/riley')
 def riley():
-    riley_conv = read_texts('data/riley.txt', '+18186323954', 'data/riley_plain.txt')
     inbound_sentiments = []
     outbound_sentiments = []
+
+    # cosine similarity
+    sim = cs.get_conv_cosine_similarity(all_convos['riley'])
 
     # language modeling
     sample_sentence = generate_markov('data/riley_plain.txt')
 
     # sentiment analysis
-    inbound_sentiments, outbound_sentiments = get_sentiments(riley_conv)
-
-    # cosine similarity
-    matrix = get_cosine_similarity(riley_conv)[0]
-    sim = str(matrix).split(' ')[-1][:-1]
+    inbound_sentiments, outbound_sentiments = get_sentiments(all_convos['riley'])
 
     return render_template('friend.html',
         name='Riley Pietsch',
@@ -128,19 +130,17 @@ def riley():
 
 @app.route('/christina')
 def christina():
-    christina_conv = read_texts('data/christina.txt', '+19165217921', 'data/christina_plain.txt')
     inbound_sentiments = []
     outbound_sentiments = []
+
+    # cosine similarity
+    sim = cs.get_conv_cosine_similarity(all_convos['christina'])
 
     # language modeling
     sample_sentence = generate_markov('data/christina_plain.txt')
 
     # sentiment analysis
-    inbound_sentiments, outbound_sentiments = get_sentiments(christina_conv)
-
-    # cosine similarity
-    matrix = get_cosine_similarity(christina_conv)[0]
-    sim = str(matrix).split(' ')[-1][:-1]
+    inbound_sentiments, outbound_sentiments = get_sentiments(all_convos['christina'])
 
     return render_template('friend.html',
         name='Christina Milanes',
@@ -151,19 +151,17 @@ def christina():
 
 @app.route('/mom')
 def mom():
-    mom_conv = read_texts('data/mom.txt', '+14088211126', 'data/mom_plain.txt')
     inbound_sentiments = []
     outbound_sentiments = []
+
+    # cosine similarity
+    sim = cs.get_conv_cosine_similarity(all_convos['mom'])
 
     # language modeling
     sample_sentence = generate_markov('data/mom_plain.txt')
 
     # sentiment analysis
-    inbound_sentiments, outbound_sentiments = get_sentiments(mom_conv)
-
-    # cosine similarity
-    matrix = get_cosine_similarity(mom_conv)[0]
-    sim = str(matrix).split(' ')[-1][:-1]
+    inbound_sentiments, outbound_sentiments = get_sentiments(all_convos['mom'])
 
     return render_template('friend.html',
         name='Helene Deng',
@@ -218,17 +216,17 @@ def get_sentiments(conv):
 
 
 # Get the cosine similarity between two participants in a text conversation
-def get_cosine_similarity(conv):
-    inbound = ""
-    outbound = ""
-    for tm in conv.inbound:
-        inbound += tm["body"] + " "
-    for tm in conv.outbound:
-        outbound += tm["body"] + " "
+# def get_cosine_similarity(conv):
+#     inbound = ""
+#     outbound = ""
+#     for tm in conv.inbound:
+#         inbound += tm["body"] + " "
+#     for tm in conv.outbound:
+#         outbound += tm["body"] + " "
 
-    vect = TfidfVectorizer(min_df=1, decode_error='ignore')
-    tfidf = vect.fit_transform([inbound, outbound])
-    return (tfidf * tfidf.T).A
+#     vect = TfidfVectorizer(min_df=1, decode_error='ignore')
+#     tfidf = vect.fit_transform([inbound, outbound])
+#     return (tfidf * tfidf.T).A
 
 
 # Custom markov stuff!
