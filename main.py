@@ -6,7 +6,6 @@ from datetime import datetime
 import nltk.classify.util
 from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import movie_reviews
-from nltk.model.ngram import NgramModel
 from nltk.probability import LidstoneProbDist
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -225,19 +224,7 @@ def get_cosine_similarity(conv):
     vect = TfidfVectorizer(min_df=1, decode_error='ignore')
     tfidf = vect.fit_transform([inbound, outbound])
     return (tfidf * tfidf.T).A
-
-
-# Uses nltk's ngram model, but it's broken/deprecated... Boo.... :(
-def generate_language_model(texts):
-    tokenized = []
-    for t in texts:
-        body = t["body"].split(" ")
-        for b in body:
-            tokenized.append(b)
-
-    est = lambda fdist : LidstoneProbDist(fdist, 0.2)
-    lm = NgramModel(3, tokenized, estimator=est)
-    return lm
+    
 
 # Custom markov stuff!
 def generate_markov(textfile):
