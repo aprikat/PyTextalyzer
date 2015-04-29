@@ -76,21 +76,25 @@ def index():
     all_convos['christina'] = read_texts('data/christina.txt', '+19165217921', 'data/christina_plain.txt')
     all_convos['mom'] = read_texts('data/mom.txt', '+14088211126', 'data/mom_plain.txt')
 
-    all_outbound = all_convos['ankita'].outbound + all_convos['riley'].outbound + all_convos['christina'].outbound + all_convos['mom'].outbound
+    # all_outbound = all_convos['ankita'].outbound + all_convos['riley'].outbound + all_convos['christina'].outbound + all_convos['mom'].outbound
 
-    corpora_sims = cs.get_cosine_similarity_to_corpora(all_outbound)
+    # corpora_sims = cs.get_cosine_similarity_to_corpora(all_outbound)
 
-    return render_template('index.html',
-        corpora_sims=corpora_sims)
+    # return render_template('index.html',
+    #     corpora_sims=corpora_sims)
+
+    return render_template('index.html')
 
 
 @app.route('/ankita')
 def ankita():
+    all_outbound = all_convos['ankita'].outbound + all_convos['riley'].outbound + all_convos['christina'].outbound + all_convos['mom'].outbound
     inbound_sentiments = []
     outbound_sentiments = []
 
     # cosine similarity
     sim = cs.get_conv_cosine_similarity(all_convos['ankita'])
+    corpora_sims = cs.get_cosine_similarity_to_corpora(all_outbound)
 
     # language modeling
     sample_sentence = generate_markov('data/ankita_plain.txt')
@@ -103,16 +107,19 @@ def ankita():
         sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
-        cosine_sim=sim)
+        cosine_sim=sim,
+        corpora_sims=corpora_sims)
 
 
 @app.route('/riley')
 def riley():
+    all_outbound = all_convos['ankita'].outbound + all_convos['riley'].outbound + all_convos['christina'].outbound + all_convos['mom'].outbound
     inbound_sentiments = []
     outbound_sentiments = []
 
     # cosine similarity
     sim = cs.get_conv_cosine_similarity(all_convos['riley'])
+    corpora_sims = cs.get_cosine_similarity_to_corpora(all_outbound)
 
     # language modeling
     sample_sentence = generate_markov('data/riley_plain.txt')
@@ -125,16 +132,19 @@ def riley():
         sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
-        cosine_sim=sim)
+        cosine_sim=sim,
+        corpora_sims=corpora_sims)
 
 
 @app.route('/christina')
 def christina():
+    all_outbound = all_convos['ankita'].outbound + all_convos['riley'].outbound + all_convos['christina'].outbound + all_convos['mom'].outbound
     inbound_sentiments = []
     outbound_sentiments = []
 
     # cosine similarity
     sim = cs.get_conv_cosine_similarity(all_convos['christina'])
+    corpora_sims = cs.get_cosine_similarity_to_corpora(all_outbound)
 
     # language modeling
     sample_sentence = generate_markov('data/christina_plain.txt')
@@ -147,15 +157,18 @@ def christina():
         sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
-        cosine_sim=sim)
+        cosine_sim=sim,
+        corpora_sims=corpora_sims)
 
 @app.route('/mom')
 def mom():
+    all_outbound = all_convos['ankita'].outbound + all_convos['riley'].outbound + all_convos['christina'].outbound + all_convos['mom'].outbound
     inbound_sentiments = []
     outbound_sentiments = []
 
     # cosine similarity
     sim = cs.get_conv_cosine_similarity(all_convos['mom'])
+    corpora_sims = cs.get_cosine_similarity_to_corpora(all_outbound)
 
     # language modeling
     sample_sentence = generate_markov('data/mom_plain.txt')
@@ -168,7 +181,8 @@ def mom():
         sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
-        cosine_sim=sim)
+        cosine_sim=sim,
+        corporas_sims=corpora_sims)
 
 
 def word_feats(words):

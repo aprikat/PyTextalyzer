@@ -9,14 +9,26 @@
 
 #chart div {
   font: 8px;
-  line-height: 30px;
+  line-height: 25px;
   background-color: #2ABB9B;
   text-align: right;
   padding: 3px;
   margin: 1px;
   color: white;
-  height: 30px;
+  height: 25px;
   border-radius: 2px;
+}
+
+.corpora-bar {
+    font: 8px;
+      line-height: 25px;
+      background-color: #2ABB9B;
+      text-align: right;
+      padding: 3px;
+      margin: 1px;
+      color: white;
+      height: 25px;
+      border-radius: 2px;
 }
 
 .axis path,
@@ -64,7 +76,22 @@
     </div>
     <div id="cosine">
         <h3>Cosine similarity</h3>
+        <div id="labels">
+            <p>Ankita</p>
+            <p>Brown</p>
+            <p>Inaugural</p>
+            <p>Gutenberg</p>
+            <p>Webtext</p>
+        </div>
         <div id="chart"></div>
+        <!-- <div>
+            <dl id="corpora_cosine">
+              {% for key, value in corpora_sims.iteritems() %}
+                <div class="corpora-bar">{{ key }}</div>
+                <div class="corpora-bar">{{ value }}</div>
+              {% endfor %}
+            </dl>
+        </div> -->
     </div>
 </div>
 
@@ -72,7 +99,18 @@
 
 // var data = [4, 8, 15, 16, 23, 42];
 var sim = [ {{ cosine_sim }} ];
-console.log(sim);
+var corporasims = [ {{ corpora_sims|tojson }} ];
+console.log(corporasims[0]);
+corporasims = corporasims[0];
+var corporasims_data = [];
+corporasims_data.push(corporasims["brown"]);
+corporasims_data.push(corporasims["inaugural"]);
+corporasims_data.push(corporasims["gutenberg"]);
+corporasims_data.push(corporasims["reuters"]);
+corporasims_data.push(corporasims["webtext"]);
+console.log(corporasims_data);
+// console.log(sim);
+// console.log(corporasim);
 
 var x = d3.scale.linear()
     .domain([0, d3.max(sim)])
@@ -85,6 +123,13 @@ d3.select("#chart")
     .style("width", function(d) { return x(d) + "px"; })
     .text(function(d) { return d; });
 
+d3.select("#chart")
+  .selectAll("div")
+    .data(corporasims_data)
+  .enter().append("div")
+    .style("width", function(d) { return x(d) + "px"; })
+    .text(function(d) { return d; });
+
 </script>
 <script type="text/javascript">
     outbound_sentiments = {{ your_sentiments|tojson }};
@@ -92,9 +137,9 @@ d3.select("#chart")
 
     // console.log(inbound_sentiments[0]);
 
-    var margin = {top: 260, right: 20, bottom: 30, left: 360},
+    var margin = {top: 200, right: 20, bottom: 30, left: 360},
     width = 1100 - margin.left - margin.right,
-    height = 540 - margin.top - margin.bottom;
+    height = 480 - margin.top - margin.bottom;
 
     // "Nov 13, 2014, 2:06 PM"
     var parseDate = d3.time.format("%b %e, %Y, %I:%M %p").parse;
