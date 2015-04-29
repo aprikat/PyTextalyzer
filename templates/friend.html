@@ -46,7 +46,7 @@
 
 <div id="content">
     <!-- <a href="/" class="back"></a> -->
-    <a href="/"><svg version="1.1" id="back-arrow" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="60px" width="60px" x="0px"
+    <a href="/" class="back"><svg version="1.1" id="back-arrow" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="60px" width="60px" x="0px"
          y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
     <path id="arrow-path" d="M10,0.4c-5.303,0-9.601,4.298-9.601,9.6c0,5.303,4.298,9.601,9.601,9.601c5.301,0,9.6-4.298,9.6-9.601
         C19.6,4.698,15.301,0.4,10,0.4z M9.999,17.6c-4.197,0-7.6-3.402-7.6-7.6s3.402-7.6,7.6-7.6S17.6,5.803,17.6,10
@@ -54,8 +54,13 @@
     </svg>
     </a>
     <h2>Your conversation with {{ name }}</h2>
+    <div id="markov">
+        <h3 class="inline-heading">Sample sentence:</h3>
+        <p class="inline-heading markov-sentence">"{{ sentence }}"</p>
+    </div>
     <div id="sentiment">
-        <h3>Sentiment over time</h3>
+        <h3 class="inline-heading">Sentiment over time</h3>
+        <div class="legend"><p class="inline-heading pink">you,&nbsp;</p><p class="inline-heading blue"> friend</p></div>
     </div>
     <div id="cosine">
         <h3>Cosine similarity</h3>
@@ -87,9 +92,9 @@ d3.select("#chart")
 
     // console.log(inbound_sentiments[0]);
 
-    var margin = {top: 220, right: 20, bottom: 30, left: 360},
+    var margin = {top: 260, right: 20, bottom: 30, left: 360},
     width = 1100 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 540 - margin.top - margin.bottom;
 
     // "Nov 13, 2014, 2:06 PM"
     var parseDate = d3.time.format("%b %e, %Y, %I:%M %p").parse;
@@ -157,13 +162,15 @@ d3.select("#chart")
           .text("Sentiment");
 
       svg.append("path")
+      .datum(data2)
+      .attr("class", "inbound-line")
+      .attr("d", line);
+
+      svg.append("path")
           .datum(data)
           .attr("class", "outbound-line")
           .attr("d", line);
 
-        svg.append("path")
-          .datum(data2)
-          .attr("class", "inbound-line")
-          .attr("d", line);
+
 
 </script>

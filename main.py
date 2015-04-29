@@ -12,6 +12,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 from textblob import TextBlob
 
+from markov import Markov
+
 app = Flask(__name__)
 
 class Conversation:
@@ -25,29 +27,41 @@ class Conversation:
 #         self.timestamp = datetime.now()     # ?
 #         self.body = ''
 
-def read_texts(textfile, sender):
+def read_texts(textfile, sender, plain_text):
+    # ptxt_out = open(plain_text_out, 'w+')
+    # ptxt_in = open(plain_text_in, 'w+')
+    ptxt = open(plain_text, 'w+')
     with open(textfile) as f:
         this_conv = Conversation()
         for line in f:
             line = line.strip()
             items = line.split('|')
+            # outbound
             if items[0] == '+14088215768':
                 tm = {}
                 tm["sender"] = items[0]
                 # tm["timestamp"] = datetime.strptime(items[1], '%b %d, %Y, %I:%M %p')
                 tm["timestamp"] = items[1].decode('utf-8', errors='ignore')
                 tm["body"] = items[2].strip()
+                # ptxt_out.write(tm["body"] + " ")
+                ptxt.write(tm["body"] + " ")
                 this_conv.outbound.append(tm)
+            # inbound
             elif items[0] == sender:
                 tm = {}
                 tm["sender"] = items[0]
                 # tm["timestamp"] = datetime.strptime(items[1], '%b %d, %Y, %I:%M %p')
                 tm["timestamp"] = items[1].decode('utf-8', errors='ignore')
                 tm["body"] = items[2].strip()
+                # ptxt_in.write(tm["body"] + " ")
+                ptxt.write(tm["body"] + " ")
                 this_conv.inbound.append(tm)
             else:
                 pass
     f.close()
+    # ptxt_out.close()
+    # ptxt_in.close()
+    ptxt.close()
     return this_conv
 
 
@@ -58,9 +72,12 @@ def index():
 
 @app.route('/ankita')
 def ankita():
-    ankita_conv = read_texts('data/ankita.txt', '+15103649591')
+    ankita_conv = read_texts('data/ankita.txt', '+15103649591', 'data/ankita_plain.txt')
     inbound_sentiments = []
     outbound_sentiments = []
+
+    # language modeling
+    sample_sentence = generate_markov('data/ankita_plain.txt')
 
     # sentiment analysis
     inbound_sentiments, outbound_sentiments = get_sentiments(ankita_conv)
@@ -75,6 +92,7 @@ def ankita():
 
     return render_template('friend.html',
         name='Ankita Agharkar',
+        sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
         cosine_sim=sim)
@@ -82,9 +100,12 @@ def ankita():
 
 @app.route('/riley')
 def riley():
-    riley_conv = read_texts('data/riley.txt', '+18186323954')
+    riley_conv = read_texts('data/riley.txt', '+18186323954', 'data/riley_plain.txt')
     inbound_sentiments = []
     outbound_sentiments = []
+
+    # language modeling
+    sample_sentence = generate_markov('data/riley_plain.txt')
 
     # sentiment analysis
     inbound_sentiments, outbound_sentiments = get_sentiments(riley_conv)
@@ -95,6 +116,7 @@ def riley():
 
     return render_template('friend.html',
         name='Riley Pietsch',
+        sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
         cosine_sim=sim)
@@ -102,9 +124,12 @@ def riley():
 
 @app.route('/christina')
 def christina():
-    christina_conv = read_texts('data/christina.txt', '+19165217921')
+    christina_conv = read_texts('data/christina.txt', '+19165217921', 'data/christina_plain.txt')
     inbound_sentiments = []
     outbound_sentiments = []
+
+    # language modeling
+    sample_sentence = generate_markov('data/christina_plain.txt')
 
     # sentiment analysis
     inbound_sentiments, outbound_sentiments = get_sentiments(christina_conv)
@@ -115,15 +140,19 @@ def christina():
 
     return render_template('friend.html',
         name='Christina Milanes',
+        sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
         cosine_sim=sim)
 
 @app.route('/mom')
 def mom():
-    mom_conv = read_texts('data/mom.txt', '+14088211126')
+    mom_conv = read_texts('data/mom.txt', '+14088211126', 'data/mom_plain.txt')
     inbound_sentiments = []
     outbound_sentiments = []
+
+    # language modeling
+    sample_sentence = generate_markov('data/mom_plain.txt')
 
     # sentiment analysis
     inbound_sentiments, outbound_sentiments = get_sentiments(mom_conv)
@@ -134,6 +163,7 @@ def mom():
 
     return render_template('friend.html',
         name='Helene Deng',
+        sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
         cosine_sim=sim)
@@ -197,7 +227,7 @@ def get_cosine_similarity(conv):
     return (tfidf * tfidf.T).A
 
 
-# Given a list of a person's tokenized texts, generate a language model
+# Uses nltk's ngram model, but it's broken/deprecated... Boo.... :(
 def generate_language_model(texts):
     tokenized = []
     for t in texts:
@@ -208,6 +238,13 @@ def generate_language_model(texts):
     est = lambda fdist : LidstoneProbDist(fdist, 0.2)
     lm = NgramModel(3, tokenized, estimator=est)
     return lm
+
+# Custom markov stuff!
+def generate_markov(textfile):
+    f = open(textfile)
+    markov_model = Markov(f)
+    f.close()
+    return markov_model.generate_markov_text(size=16)
 
 if __name__ == '__main__':
     app.debug = True
