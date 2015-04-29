@@ -7,9 +7,11 @@ class CosineSimilarity:
 
 	def __init__(self):
 		self.vect = TfidfVectorizer(min_df=1, decode_error='ignore')
-		self.corpora = ( nltk.corpus.brown, nltk.corpus.gutenberg, 
-			nltk.corpus.webtext, nltk.corpus.reuters,
-			nltk.corpus.inaugural )
+		self.corpora = { nltk.corpus.brown : "brown", 
+			nltk.corpus.gutenberg : "gutenberg", 
+			nltk.corpus.webtext : "webtext", 
+			nltk.corpus.reuters : "reuters",
+			nltk.corpus.inaugural : "inaugural" }
 
 	def _calculate_cosine_similarity(self, corpus1, corpus2):
 		tfidf = self.vect.fit_transform([corpus1, corpus2])
@@ -37,11 +39,14 @@ class CosineSimilarity:
 
 		similarities = {}
 
-		brown_corp = " ".join(self.corpora[3].words())
-		brown_sim = self._calculate_cosine_similarity(brown_corp, outbound)
-		similarities["brown"] = brown_sim
+		for corpus, name in self.corpora.iteritems():
+			corp_concat = " ".join(corpus.words())
+			corp_sim = self._calculate_cosine_similarity(corp_concat, outbound)
+			similarities[name] = corp_sim
 
 		return similarities
+
+
 
 
 

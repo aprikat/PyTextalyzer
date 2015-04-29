@@ -7,10 +7,12 @@ import nltk.classify.util
 from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import movie_reviews
 from nltk.probability import LidstoneProbDist
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 from textblob import TextBlob
 
 from markov import Markov
+
 from cosine_similarity import CosineSimilarity
 
 app = Flask(__name__)
@@ -83,23 +85,17 @@ def ankita():
     # sentiment analysis
     inbound_sentiments, outbound_sentiments = get_sentiments(ankita_conv)
 
-    # trigram modeling
-    # lm = generate_language_model(ankita_conv.inbound)
-    # print lm
-
     # cosine similarity
-    sim = cs.get_conv_cosine_similarity(ankita_conv)
+    # matrix = get_cosine_similarity(ankita_conv)[0]
     # sim = str(matrix).split(' ')[-1][:-1]
 
-    # map of corpora to their cosine similarities
-    corpora_sims = cs.get_cosine_similarity_to_corpora(ankita_conv.outbound)
+    sim = cs.get_conv_cosine_similarity(ankita_conv)
 
     return render_template('friend.html',
         name='Ankita Agharkar',
         sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
-        brown_sim=corpora_sims["brown"],
         cosine_sim=sim)
 
 
@@ -116,7 +112,7 @@ def riley():
     inbound_sentiments, outbound_sentiments = get_sentiments(riley_conv)
 
     # cosine similarity
-    matrix = get_conv_cosine_similarity(riley_conv)[0]
+    matrix = get_cosine_similarity(riley_conv)[0]
     sim = str(matrix).split(' ')[-1][:-1]
 
     return render_template('friend.html',
@@ -140,7 +136,7 @@ def christina():
     inbound_sentiments, outbound_sentiments = get_sentiments(christina_conv)
 
     # cosine similarity
-    matrix = get_conv_cosine_similarity(christina_conv)[0]
+    matrix = get_cosine_similarity(christina_conv)[0]
     sim = str(matrix).split(' ')[-1][:-1]
 
     return render_template('friend.html',
@@ -163,7 +159,7 @@ def mom():
     inbound_sentiments, outbound_sentiments = get_sentiments(mom_conv)
 
     # cosine similarity
-    matrix = get_conv_cosine_similarity(mom_conv)[0]
+    matrix = get_cosine_similarity(mom_conv)[0]
     sim = str(matrix).split(' ')[-1][:-1]
 
     return render_template('friend.html',
@@ -216,6 +212,21 @@ def get_sentiments(conv):
     inbound = list(inbound)
     outbound = list(outbound)
     return (inbound, outbound)
+
+
+# Get the cosine similarity between two participants in a text conversation
+def get_cosine_similarity(conv):
+    inbound = ""
+    outbound = ""
+    for tm in conv.inbound:
+        inbound += tm["body"] + " "
+    for tm in conv.outbound:
+        outbound += tm["body"] + " "
+
+    vect = TfidfVectorizer(min_df=1, decode_error='ignore')
+    tfidf = vect.fit_transform([inbound, outbound])
+    return (tfidf * tfidf.T).A
+
 
 # Custom markov stuff!
 def generate_markov(textfile):
