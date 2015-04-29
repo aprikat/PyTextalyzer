@@ -89,12 +89,12 @@ h2 {
 }
 
 #back-arrow:hover {
-    opacity: 0.5;
+    opacity: 0.7;
     pointer-events: all;
 }
 
 #arrow-path {
-    fill: #5C5555;
+    fill: #34495e;
     stroke: none;
     /*stroke: #5C5555;*/
     pointer-events: all;

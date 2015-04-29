@@ -30,9 +30,15 @@
   display: none;
 }
 
-.line {
+.outbound-line {
   fill: none;
   stroke: #F62459;
+  stroke-width: 1.5px;
+}
+
+.inbound-line {
+  fill: none;
+  stroke: #22A7F0;
   stroke-width: 1.5px;
 }
 
@@ -120,14 +126,14 @@ d3.select("#chart")
 
       });
 
-      // var data2 = inbound_sentiments.map(function(d)) {
-      //   return {
-      //        date: parseDate(d[0]),
-      //        close: d[1]
-      //     };
-      // });
+      var data2 = inbound_sentiments.map(function(d) {
+        return {
+             date: parseDate(d[0]),
+             close: d[1]
+          };
+      });
 
-      console.log(data);
+      // console.log(data);
 
 
       x.domain(d3.extent(data, function(d) { return d.date; }));
@@ -152,7 +158,12 @@ d3.select("#chart")
 
       svg.append("path")
           .datum(data)
-          .attr("class", "line")
+          .attr("class", "outbound-line")
+          .attr("d", line);
+
+        svg.append("path")
+          .datum(data2)
+          .attr("class", "inbound-line")
           .attr("d", line);
 
 </script>
