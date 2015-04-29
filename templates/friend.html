@@ -74,6 +74,9 @@
 var sim = [ {{ cosine_sim }} ];
 console.log(sim);
 
+var brown_sim = [ {{ brown_sim }} ];
+console.log(brown_sim);
+
 var x = d3.scale.linear()
     .domain([0, d3.max(sim)])
     .range([0, 800]);
