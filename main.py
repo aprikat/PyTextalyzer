@@ -91,11 +91,14 @@ def ankita():
 
     sim = cs.get_conv_cosine_similarity(ankita_conv)
 
+    # corpora_sims = cs.get_cosine_similarity_to_corpora(ankita_conv.outbound)
+
     return render_template('friend.html',
         name='Ankita Agharkar',
         sentence=sample_sentence,
         your_sentiments=outbound_sentiments,
         friend_sentiments=inbound_sentiments,
+        # corpora_sims=corpora_sims,
         cosine_sim=sim)
 
 
