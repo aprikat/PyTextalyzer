@@ -65,8 +65,6 @@ def ankita():
     # sentiment analysis
     inbound_sentiments, outbound_sentiments = get_sentiments(ankita_conv)
 
-    print inbound_sentiments
-
     # trigram modeling
     # lm = generate_language_model(ankita_conv.inbound)
     # print lm
@@ -85,27 +83,60 @@ def ankita():
 @app.route('/riley')
 def riley():
     riley_conv = read_texts('data/riley.txt', '+18186323954')
+    inbound_sentiments = []
+    outbound_sentiments = []
+
+    # sentiment analysis
+    inbound_sentiments, outbound_sentiments = get_sentiments(riley_conv)
+
+    # cosine similarity
     matrix = get_cosine_similarity(riley_conv)[0]
     sim = str(matrix).split(' ')[-1][:-1]
 
-    return render_template('friend.html', name='Riley Pietsch', cosine_sim=sim)
+    return render_template('friend.html',
+        name='Riley Pietsch',
+        your_sentiments=outbound_sentiments,
+        friend_sentiments=inbound_sentiments,
+        cosine_sim=sim)
 
 
 @app.route('/christina')
 def christina():
     christina_conv = read_texts('data/christina.txt', '+19165217921')
+    inbound_sentiments = []
+    outbound_sentiments = []
+
+    # sentiment analysis
+    inbound_sentiments, outbound_sentiments = get_sentiments(christina_conv)
+
+    # cosine similarity
     matrix = get_cosine_similarity(christina_conv)[0]
     sim = str(matrix).split(' ')[-1][:-1]
 
-    return render_template('friend.html', name='Christina Milanes', cosine_sim=sim)
+    return render_template('friend.html',
+        name='Christina Milanes',
+        your_sentiments=outbound_sentiments,
+        friend_sentiments=inbound_sentiments,
+        cosine_sim=sim)
 
 @app.route('/mom')
 def mom():
     mom_conv = read_texts('data/mom.txt', '+14088211126')
+    inbound_sentiments = []
+    outbound_sentiments = []
+
+    # sentiment analysis
+    inbound_sentiments, outbound_sentiments = get_sentiments(mom_conv)
+
+    # cosine similarity
     matrix = get_cosine_similarity(mom_conv)[0]
     sim = str(matrix).split(' ')[-1][:-1]
 
-    return render_template('friend.html', name='Helene Deng', cosine_sim=sim)
+    return render_template('friend.html',
+        name='Helene Deng',
+        your_sentiments=outbound_sentiments,
+        friend_sentiments=inbound_sentiments,
+        cosine_sim=sim)
 
 
 def word_feats(words):

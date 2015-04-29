@@ -65,10 +65,37 @@ h1 {
     width: 60%;
 }
 
+#cosine {
+    position: relative;
+    top: 300px;
+    left: 0px;
+}
+
 h2 {
     font-size: 48px;
     text-align: center;
     top: 35%;
     transform: translateY(-50%);
     left: 40%;
+}
+
+#back-arrow {
+    height: 60px;
+    width: 60px;
+    position: absolute;
+    top: -30px;
+    left: 0;
+    /*fill: #34495e;*/
+}
+
+#back-arrow:hover {
+    opacity: 0.5;
+    pointer-events: all;
+}
+
+#arrow-path {
+    fill: #5C5555;
+    stroke: none;
+    /*stroke: #5C5555;*/
+    pointer-events: all;
 }
