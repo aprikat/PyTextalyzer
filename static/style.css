@@ -43,6 +43,19 @@ h2              { font-size: 1.2em; }
     left: 40%;
 }
 
+#full-background {
+    width: 100%;
+    height: 100vh;
+    background-image: url('equations-wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 h1 {
     font-size: 80px;
 }
